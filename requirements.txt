@@ -1,0 +1,23 @@
+# Web framework
+fastapi
+uvicorn[standard]
+
+# ORM y base de datos (SQL Server)
+sqlalchemy
+alembic
+
+# Validación y settings
+pydantic
+pydantic-settings
+email-validator
+python-multipart
+
+# Auth y seguridad (JWT + hashing)
+python-jose[cryptography]
+passlib[bcrypt]
+argon2-cffi
+
+httpx
+orjson
+loguru
+typing-extensions
