@@ -10,25 +10,29 @@ from models.pago import Pago
 from .base import Base, TimestampMixin, uuid_pk
 
 
-class DocumentoVenta(TimestampMixin, Base):
+class DocumentoVenta(Base):
     __tablename__ = "documento_venta"
-    __table_args__ = (UniqueConstraint("empresa_id", "tipo", "numero", name="uq_documento_venta_emp_tipo_num"),)
+    __table_args__ = (UniqueConstraint("id_empresa_documento_venta", "tipo_documento_documento_venta", "numero_documento_documento_venta", name="uq_documento_venta_emp_tipo_num"),)
 
-    id: Mapped[uuid_pk] = mapped_column(UNIQUEIDENTIFIER(as_uuid=True), primary_key=True, default=uuid_pk)
-    empresa_id: Mapped[uuid_pk] = mapped_column(UNIQUEIDENTIFIER(as_uuid=True), ForeignKey("empresa.id_empresa"), nullable=False)
-    cliente_id: Mapped[uuid_pk] = mapped_column(UNIQUEIDENTIFIER(as_uuid=True), ForeignKey("tercero.id"), nullable=False)
-    serie_id: Mapped[uuid_pk] = mapped_column(UNIQUEIDENTIFIER(as_uuid=True), ForeignKey("serie_numeracion.id"), nullable=False)
-    tipo: Mapped[str] = mapped_column(String(30), nullable=False)
-    numero: Mapped[str] = mapped_column(String(40), nullable=False)
-    fecha_emision: Mapped[Optional[Date]] = mapped_column(Date)
-    fecha_vencimiento: Mapped[Optional[Date]] = mapped_column(Date)
-    moneda: Mapped[str] = mapped_column(String(10), nullable=False)
-    estado: Mapped[str] = mapped_column(String(30), nullable=False, default="borrador")
-    subtotal: Mapped[float] = mapped_column(Numeric(18, 2), nullable=False, default=0)
-    impuestos: Mapped[float] = mapped_column(Numeric(18, 2), nullable=False, default=0)
-    total: Mapped[float] = mapped_column(Numeric(18, 2), nullable=False, default=0)
-    saldo: Mapped[float] = mapped_column(Numeric(18, 2), nullable=False, default=0)
-    notas: Mapped[Optional[str]] = mapped_column(Text)
+    id_documento_venta: Mapped[int] = mapped_column("id_documento_venta", primary_key=True, autoincrement=True)
+    id_empresa_documento_venta: Mapped[int] = mapped_column("id_empresa_documento_venta", ForeignKey("empresa.id_empresa"), nullable=False)
+    id_tercero_documento_venta: Mapped[Optional[int]] = mapped_column("id_tercero_documento_venta", ForeignKey("tercero.id_tercero"))
+    id_serie_documento_venta: Mapped[Optional[int]] = mapped_column("id_serie_documento_venta", ForeignKey("serie_numeracion.id_serie_numeracion"))
+    tipo_documento_documento_venta: Mapped[Optional[str]] = mapped_column("tipo_documento_documento_venta", String(50))
+    numero_documento_documento_venta: Mapped[Optional[str]] = mapped_column("numero_documento_documento_venta", String(100))
+    fecha_emision_documento_venta: Mapped[Optional[Date]] = mapped_column("fecha_emision_documento_venta", Date)
+    fecha_vencimiento_documento_venta: Mapped[Optional[Date]] = mapped_column("fecha_vencimiento_documento_venta", Date)
+    moneda_documento_venta: Mapped[Optional[str]] = mapped_column("moneda_documento_venta", String(10))
+    estado_documento_venta: Mapped[Optional[str]] = mapped_column("estado_documento_venta", String(50))
+    subtotal_documento_venta: Mapped[float] = mapped_column("subtotal_documento_venta", Numeric(14, 2), default=0.00)
+    impuestos_documento_venta: Mapped[float] = mapped_column("impuestos_documento_venta", Numeric(14, 2), default=0.00)
+    total_documento_venta: Mapped[float] = mapped_column("total_documento_venta", Numeric(14, 2), default=0.00)
+    saldo_documento_venta: Mapped[float] = mapped_column("saldo_documento_venta", Numeric(14, 2), default=0.00)
+    notas_documento_venta: Mapped[Optional[str]] = mapped_column("notas_documento_venta", Text)
+    created_by_id_usuario_documento_venta: Mapped[Optional[int]] = mapped_column("created_by_id_usuario_documento_venta", ForeignKey("usuario.id_usuario"))
+    created_at_documento_venta: Mapped[Optional[str]] = mapped_column("created_at_documento_venta")
+    updated_at_documento_venta: Mapped[Optional[str]] = mapped_column("updated_at_documento_venta")
+    deleted_at_documento_venta: Mapped[Optional[str]] = mapped_column("deleted_at_documento_venta")
 
     empresa = relationship("Empresa", back_populates="documentos_venta")
     cliente = relationship("Tercero", back_populates="documentos_cliente")

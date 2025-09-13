@@ -4,26 +4,26 @@ from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
 class EmpresaBase(BaseModel):
     model_config = ConfigDict(from_attributes=True)
-    nombre: str = Field(..., max_length=200)
-    nit: str = Field(..., max_length=30)
-    email: Optional[EmailStr] = None
-    telefono: Optional[str] = Field(None, max_length=50)
-    direccion: Optional[str] = Field(None, max_length=300)
-    moneda: str = Field(..., max_length=10)
+    nombre_empresa: str = Field(..., max_length=200)
+    nit_empresa: str = Field(..., max_length=50)
+    email_empresa: Optional[EmailStr] = None
+    telefono_empresa: Optional[str] = Field(None, max_length=50)
+    direccion_empresa: Optional[str] = Field(None, max_length=300)
+    moneda_empresa: str = Field(..., max_length=10)
 
 class EmpresaCreate(EmpresaBase):
     pass
 
 class EmpresaUpdate(BaseModel):
     model_config = ConfigDict(from_attributes=True)
-    nombre: Optional[str] = Field(None, max_length=200)
-    nit: Optional[str] = Field(None, max_length=30)
-    email: Optional[EmailStr] = None
-    telefono: Optional[str] = Field(None, max_length=50)
-    direccion: Optional[str] = Field(None, max_length=300)
-    moneda: Optional[str] = Field(None, max_length=10)
+    nombre_empresa: Optional[str] = Field(None, max_length=200)
+    nit_empresa: Optional[str] = Field(None, max_length=50)
+    email_empresa: Optional[EmailStr] = None
+    telefono_empresa: Optional[str] = Field(None, max_length=50)
+    direccion_empresa: Optional[str] = Field(None, max_length=300)
+    moneda_empresa: Optional[str] = Field(None, max_length=10)
 
 class EmpresaRead(EmpresaBase):
-    id: UUID
-    created_at: Optional[str] = None
-    updated_at: Optional[str] = None
+    id_empresa: int
+    created_at_empresa: Optional[str] = None
+    updated_at_empresa: Optional[str] = None

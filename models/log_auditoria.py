@@ -9,14 +9,14 @@ from .base import Base, uuid_pk
 class LogAuditoria(Base):
     __tablename__ = "log_auditoria"
 
-    id: Mapped[uuid_pk] = mapped_column(UNIQUEIDENTIFIER(as_uuid=True), primary_key=True, default=uuid_pk)
-    empresa_id: Mapped[uuid_pk] = mapped_column(UNIQUEIDENTIFIER(as_uuid=True), ForeignKey("empresa.id_empresa"), nullable=False)
-    usuario_id: Mapped[uuid_pk] = mapped_column(UNIQUEIDENTIFIER(as_uuid=True), ForeignKey("usuario.id"), nullable=True)
-    evento_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), server_default=func.sysdatetime(), nullable=False)
-    tabla: Mapped[str] = mapped_column(String(128), nullable=False)
-    operacion: Mapped[str] = mapped_column(String(16), nullable=False)
-    registro_id: Mapped[str] = mapped_column(String(64), nullable=False)
-    before_data: Mapped[str] = mapped_column(Text, nullable=True)
-    after_data: Mapped[str] = mapped_column(Text, nullable=True)
+    id_log_auditoria: Mapped[int] = mapped_column("id_log_auditoria", primary_key=True, autoincrement=True)
+    id_empresa_log_auditoria: Mapped[int] = mapped_column("id_empresa_log_auditoria", ForeignKey("empresa.id_empresa"), nullable=False)
+    id_usuario_log_auditoria: Mapped[int] = mapped_column("id_usuario_log_auditoria", ForeignKey("usuario.id_usuario"), nullable=False)
+    evento_at_log_auditoria: Mapped[DateTime] = mapped_column("evento_at_log_auditoria", DateTime, nullable=False)
+    tabla_log_auditoria: Mapped[str] = mapped_column("tabla_log_auditoria", String(150), nullable=True)
+    operacion_log_auditoria: Mapped[str] = mapped_column("operacion_log_auditoria", String(50), nullable=True)
+    registro_id_log_auditoria: Mapped[str] = mapped_column("registro_id_log_auditoria", String(200), nullable=True)
+    before_data_log_auditoria: Mapped[str] = mapped_column("before_data_log_auditoria", Text, nullable=True)
+    after_data_log_auditoria: Mapped[str] = mapped_column("after_data_log_auditoria", Text, nullable=True)
 
     empresa = relationship("Empresa", back_populates="auditorias")

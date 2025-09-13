@@ -11,16 +11,15 @@ from .base import Base, uuid_pk
 
 class SerieNumeracion(Base):
     __tablename__ = "serie_numeracion"
-    __table_args__ = (UniqueConstraint("empresa_id", "tipo_documento", "prefijo", name="uq_serie_empresa_tipo_prefijo"),)
 
-    id: Mapped[uuid_pk] = mapped_column(UNIQUEIDENTIFIER(as_uuid=True), primary_key=True, default=uuid_pk)
-    empresa_id: Mapped[uuid_pk] = mapped_column(UNIQUEIDENTIFIER(as_uuid=True), ForeignKey("empresa.id_empresa"), nullable=False)
-    tipo_documento: Mapped[str] = mapped_column(String(30), nullable=False)
-    prefijo: Mapped[str] = mapped_column(String(10), nullable=False)
-    proximo_consecutivo: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
-    habilitada: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
-    vigente_desde: Mapped[DateTime] = mapped_column(DateTime(timezone=True), nullable=True)
-    vigente_hasta: Mapped[DateTime] = mapped_column(DateTime(timezone=True), nullable=True)
+    id_serie_numeracion: Mapped[int] = mapped_column("id_serie_numeracion", primary_key=True, autoincrement=True)
+    id_empresa_serie: Mapped[int] = mapped_column("id_empresa_serie", Integer, ForeignKey("empresa.id_empresa"), nullable=False)
+    tipo_documento_serie: Mapped[str] = mapped_column("tipo_documento_serie", String(50), nullable=False)
+    prefijo_serie: Mapped[str] = mapped_column("prefijo_serie", String(20), nullable=True)
+    proximo_consecutivo_serie: Mapped[int] = mapped_column("proximo_consecutivo_serie", Integer, nullable=False, default=1)
+    habilitada_serie: Mapped[bool] = mapped_column("habilitada_serie", Boolean, default=True, nullable=False)
+    vigente_desde_serie: Mapped[DateTime] = mapped_column("vigente_desde_serie", DateTime, nullable=True)
+    vigente_hasta_serie: Mapped[DateTime] = mapped_column("vigente_hasta_serie", DateTime, nullable=True)
 
     empresa = relationship("Empresa", back_populates="series")
     documentos: Mapped[List["DocumentoVenta"]] = relationship(back_populates="serie")

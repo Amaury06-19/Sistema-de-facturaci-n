@@ -1,4 +1,4 @@
-from uuid import UUID
+ 
 from fastapi import APIRouter
 from .deps import SessionDep, get_pagination
 from fastapi import Depends
@@ -22,13 +22,13 @@ def crear_usuario(payload: UsuarioCreate, session: SessionDep):
     return UsuarioRead.model_validate(obj)
 
 @router.get("/{id}", response_model=UsuarioRead)
-def obtener_usuario(id: UUID, session: SessionDep):
+def obtener_usuario(id: int, session: SessionDep):
     svc = UsuarioService(session)
     obj = svc.get(id)
     return UsuarioRead.model_validate(obj)
 
 @router.patch("/{id}", response_model=UsuarioRead)
-def actualizar_usuario(id: UUID, payload: UsuarioUpdate, session: SessionDep):
+def actualizar_usuario(id: int, payload: UsuarioUpdate, session: SessionDep):
     svc = UsuarioService(session)
     obj = svc.get(id)
     obj = svc.update(obj, payload)
@@ -36,7 +36,7 @@ def actualizar_usuario(id: UUID, payload: UsuarioUpdate, session: SessionDep):
     return UsuarioRead.model_validate(obj)
 
 @router.delete("/{id}", status_code=204)
-def eliminar_usuario(id: UUID, session: SessionDep):
+def eliminar_usuario(id: int, session: SessionDep):
     svc = UsuarioService(session)
     obj = svc.get(id)
     svc.delete(obj)

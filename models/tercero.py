@@ -10,23 +10,24 @@ from models.gasto import Gasto
 from .base import Base, TimestampMixin, uuid_pk
 
 
-class Tercero(TimestampMixin, Base):
+class Tercero(Base):
     __tablename__ = "tercero"
 
-    id: Mapped[uuid_pk] = mapped_column(UNIQUEIDENTIFIER(as_uuid=True), primary_key=True, default=uuid_pk)
-    empresa_id: Mapped[uuid_pk] = mapped_column(UNIQUEIDENTIFIER(as_uuid=True), ForeignKey("empresa.id_empresa"), nullable=False)
-    tipo: Mapped[str] = mapped_column(String(30), nullable=False)
-    nombre: Mapped[str] = mapped_column(String(200), nullable=False)
-    identificacion: Mapped[Optional[str]] = mapped_column(String(50))
-    email: Mapped[Optional[str]] = mapped_column(String(320))
-    telefono: Mapped[Optional[str]] = mapped_column(String(50))
-    direccion: Mapped[Optional[str]] = mapped_column(String(300))
-    condiciones_pago_dias: Mapped[Optional[int]] = mapped_column(Integer)
+    id_tercero: Mapped[int] = mapped_column("id_tercero", primary_key=True, autoincrement=True)
+    id_empresa_tercero: Mapped[int] = mapped_column("id_empresa_tercero", Integer, ForeignKey("empresa.id_empresa"), nullable=False)
+    tipo_tercero_tercero: Mapped[Optional[str]] = mapped_column("tipo_tercero_tercero", String(50))
+    nombre_tercero: Mapped[str] = mapped_column("nombre_tercero", String(200), nullable=False)
+    identificacion_tercero: Mapped[Optional[str]] = mapped_column("identificacion_tercero", String(100), unique=True)
+    email_tercero: Mapped[Optional[str]] = mapped_column("email_tercero", String(150))
+    telefono_tercero: Mapped[Optional[str]] = mapped_column("telefono_tercero", String(50))
+    direccion_tercero: Mapped[Optional[str]] = mapped_column("direccion_tercero", String)
+    condiciones_pago_dias_tercero: Mapped[Optional[int]] = mapped_column("condiciones_pago_dias_tercero", Integer)
+    created_at_tercero: Mapped[Optional[str]] = mapped_column("created_at_tercero")
+    created_by_id_usuario_tercero: Mapped[Optional[int]] = mapped_column("created_by_id_usuario_tercero", Integer)
+    updated_at_tercero: Mapped[Optional[str]] = mapped_column("updated_at_tercero")
+    updated_by_id_usuario_tercero: Mapped[Optional[int]] = mapped_column("updated_by_id_usuario_tercero", Integer)
+    deleted_at_tercero: Mapped[Optional[str]] = mapped_column("deleted_at_tercero")
 
     empresa = relationship("Empresa", back_populates="terceros")
     documentos_cliente: Mapped[List["DocumentoVenta"]] = relationship(back_populates="cliente")
-    gastos_proveedor: Mapped[List["Gasto"]] = relationship(back_populates="proveedor")
-
-    __table_args__ = (
-        Index("ix_tercero_empresa_tipo_ident", "empresa_id", "tipo", "identificacion"),
-    )
+    gastos_proveedor: Mapped[List["Gasto"]] = relationship(back_populates="tercero")

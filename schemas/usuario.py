@@ -23,11 +23,13 @@ class UsuarioUpdate(BaseModel):
 
 class UsuarioRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)
-    id: UUID
+    id: int
     nombre: str
     email: EmailStr
     activo: bool
     is_superadmin: bool
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
     last_login_at: Optional[datetime]
     created_at: datetime
     updated_at: datetime

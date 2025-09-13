@@ -10,15 +10,15 @@ from .base import Base, uuid_pk
 class DocumentoVentaLinea(Base):
     __tablename__ = "documento_venta_linea"
 
-    id: Mapped[uuid_pk] = mapped_column(UNIQUEIDENTIFIER(as_uuid=True), primary_key=True, default=uuid_pk)
-    documento_id: Mapped[uuid_pk] = mapped_column(UNIQUEIDENTIFIER(as_uuid=True), ForeignKey("documento_venta.id"), nullable=False)
-    producto_id: Mapped[uuid_pk] = mapped_column(UNIQUEIDENTIFIER(as_uuid=True), ForeignKey("producto.id"), nullable=False)
-    descripcion: Mapped[Optional[str]] = mapped_column(Text)
-    cantidad: Mapped[float] = mapped_column(Numeric(18, 4), nullable=False)
-    precio_unitario: Mapped[float] = mapped_column(Numeric(18, 2), nullable=False)
-    impuesto_id: Mapped[Optional[uuid_pk]] = mapped_column(UNIQUEIDENTIFIER(as_uuid=True), ForeignKey("impuesto.id"))
-    porcentaje_impuesto: Mapped[Optional[float]] = mapped_column(Numeric(9, 4))
-    total_linea: Mapped[float] = mapped_column(Numeric(18, 2), nullable=False)
+    id_documento_venta_linea: Mapped[int] = mapped_column("id_documento_venta_linea", primary_key=True, autoincrement=True)
+    id_documento_venta: Mapped[int] = mapped_column("id_documento_venta", ForeignKey("documento_venta.id_documento_venta"), nullable=False)
+    id_producto_documento_venta_linea: Mapped[int] = mapped_column("id_producto_documento_venta_linea", ForeignKey("producto.id_producto"), nullable=False)
+    descripcion_documento_venta_linea: Mapped[Optional[str]] = mapped_column("descripcion_documento_venta_linea", Text)
+    cantidad_documento_venta_linea: Mapped[float] = mapped_column("cantidad_documento_venta_linea", Numeric(18, 4), nullable=False)
+    precio_unitario_documento_venta_linea: Mapped[float] = mapped_column("precio_unitario_documento_venta_linea", Numeric(18, 2), nullable=False)
+    id_impuesto_documento_venta_linea: Mapped[Optional[int]] = mapped_column("id_impuesto_documento_venta_linea", ForeignKey("impuesto.id_impuesto"))
+    porcentaje_impuesto_documento_venta_linea: Mapped[Optional[float]] = mapped_column("porcentaje_impuesto_documento_venta_linea", Numeric(9, 4))
+    total_linea_documento_venta_linea: Mapped[float] = mapped_column("total_linea_documento_venta_linea", Numeric(18, 2), nullable=False)
 
     documento = relationship("DocumentoVenta", back_populates="lineas")
     producto = relationship("Producto", back_populates="lineas_venta")

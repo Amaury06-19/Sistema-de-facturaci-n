@@ -9,8 +9,8 @@ from .base import Base, uuid_pk
 class GastoAdjunto(Base):
     __tablename__ = "gasto_adjunto"
 
-    id: Mapped[uuid_pk] = mapped_column(UNIQUEIDENTIFIER(as_uuid=True), primary_key=True, default=uuid_pk)
-    gasto_id: Mapped[uuid_pk] = mapped_column(UNIQUEIDENTIFIER(as_uuid=True), ForeignKey("gasto.id"), nullable=False)
+    id: Mapped[int] = mapped_column("id_gasto_adjunto", primary_key=True, autoincrement=True)
+    gasto_id: Mapped[int] = mapped_column("id_gasto", ForeignKey("gasto.id_gasto"), nullable=False)
     filename: Mapped[str] = mapped_column(String(260), nullable=False)
     content_type: Mapped[str] = mapped_column(String(120), nullable=False)
     size_bytes: Mapped[int] = mapped_column(Integer, nullable=False)
