@@ -29,7 +29,7 @@ class DocumentoVentaService(CRUDService[DocumentoVenta, DocumentoVentaCreate, Do
         if not cli or cli.id_empresa_tercero != id_empresa:
             raise BadRequestError("El cliente no pertenece a la empresa")
         serie = self.session.get(SerieNumeracion, id_serie)
-        if not serie or serie.id_empresa_serie_numeracion != id_empresa:
+        if not serie or serie.id_empresa_serie != id_empresa:
             raise BadRequestError("La serie no pertenece a la empresa")
 
     def create(self, obj_in: DocumentoVentaCreate) -> DocumentoVenta:
