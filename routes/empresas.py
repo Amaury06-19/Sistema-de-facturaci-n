@@ -36,5 +36,4 @@ def actualizar_empresa(id: int, payload: EmpresaUpdate, session: SessionDep):
 def eliminar_empresa(id: int, session: SessionDep):
     svc = EmpresaService(session)
     obj = svc.get(id)
-    svc.delete(obj)
-    session.commit()
+    svc.delete_with_children(obj)

@@ -1,30 +1,32 @@
 from typing import Optional
-from uuid import UUID
 from pydantic import BaseModel, ConfigDict, EmailStr, Field
+from datetime import datetime
 
 class TerceroBase(BaseModel):
     model_config = ConfigDict(from_attributes=True)
-    empresa_id: UUID
-    tipo: str = Field(..., max_length=30)
-    nombre: str = Field(..., max_length=200)
-    identificacion: Optional[str] = Field(None, max_length=50)
-    email: Optional[EmailStr] = None
-    telefono: Optional[str] = Field(None, max_length=50)
-    direccion: Optional[str] = Field(None, max_length=300)
-    condiciones_pago_dias: Optional[int] = None
+    id_empresa_tercero: int
+    tipo_tercero_tercero: Optional[str] = Field(None, max_length=50)
+    nombre_tercero: str = Field(..., max_length=200)
+    identificacion_tercero: Optional[str] = Field(None, max_length=100)
+    email_tercero: Optional[EmailStr] = None
+    telefono_tercero: Optional[str] = Field(None, max_length=50)
+    direccion_tercero: Optional[str] = None
+    condiciones_pago_dias_tercero: Optional[int] = None
 
 class TerceroCreate(TerceroBase):
     pass
 
 class TerceroUpdate(BaseModel):
     model_config = ConfigDict(from_attributes=True)
-    tipo: Optional[str] = Field(None, max_length=30)
-    nombre: Optional[str] = Field(None, max_length=200)
-    identificacion: Optional[str] = Field(None, max_length=50)
-    email: Optional[EmailStr] = None
-    telefono: Optional[str] = Field(None, max_length=50)
-    direccion: Optional[str] = Field(None, max_length=300)
-    condiciones_pago_dias: Optional[int] = None
+    tipo_tercero_tercero: Optional[str] = Field(None, max_length=50)
+    nombre_tercero: Optional[str] = Field(None, max_length=200)
+    identificacion_tercero: Optional[str] = Field(None, max_length=100)
+    email_tercero: Optional[EmailStr] = None
+    telefono_tercero: Optional[str] = Field(None, max_length=50)
+    direccion_tercero: Optional[str] = None
+    condiciones_pago_dias_tercero: Optional[int] = None
 
 class TerceroRead(TerceroBase):
-    id: UUID
+    id_tercero: int
+    created_at_tercero: Optional[datetime] = None
+    updated_at_tercero: Optional[datetime] = None

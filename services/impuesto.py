@@ -10,5 +10,8 @@ class ImpuestoService(CRUDService[Impuesto, ImpuestoCreate, ImpuestoUpdate]):
     model = Impuesto
 
     def list_by_empresa(self, empresa_id, *, pagination: Pagination = Pagination()) -> ListResult[Impuesto]:
-        where = [Impuesto.empresa_id == empresa_id]
-        return self.list(pagination=pagination, where=where, order_by=[Impuesto.nombre.asc()])
+        where = [Impuesto.id_empresa_impuesto == empresa_id]
+        return self.list(pagination=pagination, where=where, order_by=[Impuesto.nombre_impuesto.asc()])
+
+    def list_all(self):
+        return self.session.query(self.model).all()

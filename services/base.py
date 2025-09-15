@@ -39,8 +39,16 @@ class CRUDService(Generic[ModelT, CreateT, UpdateT]):
                 setattr(db_obj, k, v)
         return db_obj
 
+
     def get(self, id_: UUID) -> ModelT:
-        obj = self.session.get(self.model, id_)
+        pk_attr = getattr(self.model, 'id', None)
+        if pk_attr is None:
+            # Buscar el primer atributo que sea primary_key=True
+            for c in self.model.__table__.columns:
+                if c.primary_key:
+                    pk_attr = getattr(self.model, c.name)
+                    break
+        obj = self.session.query(self.model).filter(pk_attr == id_).first()
         if not obj:
             raise NotFoundError(self.model.__name__, str(id_))
         return obj
@@ -56,27 +64,28 @@ class CRUDService(Generic[ModelT, CreateT, UpdateT]):
         if where:
             for cond in where:
                 stmt = stmt.where(cond)
-        total = self.session.execute(
-            stmt.with_only_columns(self.model.id).order_by(None)
-        ).unique().all()
-        # Siempre agregar un order_by (por clave primaria) si no se especifica
-        if order_by and len(order_by) > 0:
-            for c in order_by:
-                stmt = stmt.order_by(c)
-        else:
-            # Buscar el atributo de clave primaria real
-            pk = getattr(self.model, 'id', None)
-            if pk is None:
-                # Buscar el primer atributo con primary_key=True
-                for col in self.model.__table__.columns:
-                    if col.primary_key:
-                        pk = col
-                        break
-            if pk is not None:
-                stmt = stmt.order_by(pk)
+        # Detectar el nombre de la columna PK
+        pk_attr = getattr(self.model, 'id', None)
+        if pk_attr is None:
+            for c in self.model.__table__.columns:
+                if c.primary_key:
+                    pk_attr = getattr(self.model, c.name)
+                    break
+        count_stmt = select(pk_attr).select_from(self.model)
+        if where:
+            for cond in where:
+                count_stmt = count_stmt.where(cond)
+        total = self.session.execute(count_stmt).unique().scalar() if pk_attr is not None else 0
+        if order_by:
+            stmt = stmt.order_by(*order_by)
         stmt = stmt.offset(pagination.skip).limit(pagination.limit)
-        items = list(self.session.execute(stmt).scalars().all())
-        return ListResult(items=items, total=len(total), skip=pagination.skip, limit=pagination.limit)
+        items = self.session.execute(stmt).scalars().all()
+        return ListResult(
+            items=items,
+            total=total,
+            skip=pagination.skip,
+            limit=pagination.limit,
+        )
 
     def create(self, obj_in: CreateT) -> ModelT:
         payload = obj_in.model_dump(exclude_unset=True)

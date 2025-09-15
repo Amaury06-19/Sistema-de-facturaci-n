@@ -9,8 +9,8 @@ from .base import CRUDService, Pagination, ListResult
 class TerceroService(CRUDService[Tercero, TerceroCreate, TerceroUpdate]):
     model = Tercero
 
-    def list_by_empresa(self, empresa_id, tipo: str | None = None, *, pagination: Pagination = Pagination()) -> ListResult[Tercero]:
-        conds = [Tercero.empresa_id == empresa_id]
+    def list_by_empresa(self, id_empresa, tipo: str | None = None, *, pagination: Pagination = Pagination()) -> ListResult[Tercero]:
+        conds = [Tercero.id_empresa_tercero == id_empresa]
         if tipo:
-            conds.append(Tercero.tipo == tipo)
-        return self.list(pagination=pagination, where=conds, order_by=[Tercero.nombre.asc()])
+            conds.append(Tercero.tipo_tercero_tercero == tipo)
+        return self.list(pagination=pagination, where=conds, order_by=[Tercero.nombre_tercero.asc()])
