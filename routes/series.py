@@ -27,7 +27,7 @@ def crear_serie(payload: SerieNumeracionCreate, session: SessionDep):
 def obtener_serie(id: int, id_empresa: int = Query(...), session: SessionDep = None):
     svc = SerieNumeracionService(session)
     obj = svc.get_or_404(id)
-    if obj.id_empresa_serie_numeracion != id_empresa:
+    if obj.id_empresa_serie != id_empresa:
         raise HTTPException(status_code=404, detail="Serie no pertenece a la empresa")
     return SerieNumeracionRead.model_validate(obj)
 
@@ -36,7 +36,7 @@ def obtener_serie(id: int, id_empresa: int = Query(...), session: SessionDep = N
 def actualizar_serie(id: int, id_empresa: int = Query(...), payload: SerieNumeracionUpdate = None, session: SessionDep = None):
     svc = SerieNumeracionService(session)
     obj = svc.get_or_404(id)
-    if obj.id_empresa_serie_numeracion != id_empresa:
+    if obj.id_empresa_serie != id_empresa:
         raise HTTPException(status_code=404, detail="Serie no pertenece a la empresa")
     for k, v in payload.model_dump(exclude_unset=True).items():
         setattr(obj, k, v)
