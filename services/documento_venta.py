@@ -12,24 +12,34 @@ from schemas import (
     DocumentoVentaLineaCreate, DocumentoVentaLineaUpdate,
     PagoCreate
 )
-from .base import CRUDService
+from .base import CRUDService, Pagination
 from .exceptions import BadRequestError, NotFoundError, ConflictError
 from .serie_numeracion import SerieNumeracionService
+
 
 class DocumentoVentaService(CRUDService[DocumentoVenta, DocumentoVentaCreate, DocumentoVentaUpdate]):
     model = DocumentoVenta
 
-    def _assert_same_empresa(self, empresa_id, cliente_id, serie_id):
-        cli = self.session.get(Tercero, cliente_id)
-        if not cli or cli.empresa_id != empresa_id:
+    def list_by_empresa(self, id_empresa, *, pagination: Pagination = Pagination()):
+        where = [DocumentoVenta.id_empresa_documento_venta == id_empresa]
+        return self.list(pagination=pagination, where=where, order_by=[DocumentoVenta.id_documento_venta.desc()])
+
+    def _assert_same_empresa(self, id_empresa, id_tercero, id_serie):
+        cli = self.session.get(Tercero, id_tercero)
+        if not cli or cli.id_empresa_tercero != id_empresa:
             raise BadRequestError("El cliente no pertenece a la empresa")
-        serie = self.session.get(SerieNumeracion, serie_id)
-        if not serie or serie.empresa_id != empresa_id:
+        serie = self.session.get(SerieNumeracion, id_serie)
+        if not serie or serie.id_empresa_serie_numeracion != id_empresa:
             raise BadRequestError("La serie no pertenece a la empresa")
 
     def create(self, obj_in: DocumentoVentaCreate) -> DocumentoVenta:
-        self._assert_same_empresa(obj_in.empresa_id, obj_in.cliente_id, obj_in.serie_id)
-        doc = self.model(**obj_in.model_dump(exclude_unset=True))
+        self._assert_same_empresa(obj_in.id_empresa_documento_venta, obj_in.id_tercero_documento_venta, obj_in.id_serie_documento_venta)
+        payload = obj_in.model_dump(exclude_unset=True)
+        from datetime import datetime
+        now = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+        payload["created_at_documento_venta"] = now
+        payload["updated_at_documento_venta"] = now
+        doc = self.model(**payload)
         self.session.add(doc)
         self.session.flush()
         return doc

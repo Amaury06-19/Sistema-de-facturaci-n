@@ -1,20 +1,18 @@
-from uuid import UUID
-from fastapi import APIRouter
-from .deps import SessionDep, get_pagination
+
+from fastapi import APIRouter, Query, HTTPException
+from .deps import SessionDep
 from schemas import SerieNumeracionCreate, SerieNumeracionUpdate, SerieNumeracionRead
 from services import SerieNumeracionService
 from models import SerieNumeracion
 
 router = APIRouter()
 
-@router.get("", response_model=dict)
-def listar_series(session: SessionDep, pagination: get_pagination = get_pagination):
-    from sqlalchemy import select
-    stmt = select(SerieNumeracion).offset(pagination.skip).limit(pagination.limit)
-    items = list(session.execute(stmt).scalars().all())
-    # Total “rápido”: si vas a usar mucho, mejor haz un COUNT separado
-    total = len(items)
-    return {"items": [SerieNumeracionRead.model_validate(i) for i in items], "total": total, "skip": pagination.skip, "limit": pagination.limit}
+@router.get("", response_model=list[SerieNumeracionRead])
+def listar_series(id_empresa: int = Query(...), session: SessionDep = None):
+    svc = SerieNumeracionService(session)
+    res = svc.list_by_empresa(id_empresa)
+    return [SerieNumeracionRead.model_validate(i) for i in res.items]
+
 
 @router.post("", response_model=SerieNumeracionRead, status_code=201)
 def crear_serie(payload: SerieNumeracionCreate, session: SessionDep):
@@ -24,16 +22,22 @@ def crear_serie(payload: SerieNumeracionCreate, session: SessionDep):
     session.refresh(obj)
     return SerieNumeracionRead.model_validate(obj)
 
+
 @router.get("/{id}", response_model=SerieNumeracionRead)
-def obtener_serie(id: UUID, session: SessionDep):
+def obtener_serie(id: int, id_empresa: int = Query(...), session: SessionDep = None):
     svc = SerieNumeracionService(session)
     obj = svc.get_or_404(id)
+    if obj.id_empresa_serie_numeracion != id_empresa:
+        raise HTTPException(status_code=404, detail="Serie no pertenece a la empresa")
     return SerieNumeracionRead.model_validate(obj)
 
+
 @router.patch("/{id}", response_model=SerieNumeracionRead)
-def actualizar_serie(id: UUID, payload: SerieNumeracionUpdate, session: SessionDep):
+def actualizar_serie(id: int, id_empresa: int = Query(...), payload: SerieNumeracionUpdate = None, session: SessionDep = None):
     svc = SerieNumeracionService(session)
     obj = svc.get_or_404(id)
+    if obj.id_empresa_serie_numeracion != id_empresa:
+        raise HTTPException(status_code=404, detail="Serie no pertenece a la empresa")
     for k, v in payload.model_dump(exclude_unset=True).items():
         setattr(obj, k, v)
     session.commit()
